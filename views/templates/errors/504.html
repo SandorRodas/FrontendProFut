@@ -1,0 +1,164 @@
+{% extends "layouts/main.html" %}
+
+{% block body %}
+<!-- <div style="display: flex;align-items: center; height: 100%;">
+    
+</div> -->
+<div class="container-fluid" style="height: 97%;">
+    <div class="grid-row animated fadeIn">
+        <div class="col-12" style="margin-top:5px;">
+            <img class="ey-logo" src="{{ url_for('.static', filename='img/ey-logo-white.png') }}">
+        </div>
+        <div class="justify-content-center" style="margin-top: 15rem;">
+            <div class="card col-sm-8 col-md-8 col-lg-8 border-dark" style="margin: 0 auto;">
+                <div class="card-body">
+                    <div style="margin: 0 auto;">
+                        <h1 style="margin: 0 auto; text-align:center;" class="stroke">Gateway timeout</h1><br>
+                    <h4 style="margin: 0 auto; text-align:center;" class="stroke">This process has expired due to a timeout, please restart your session. If this issue persists, you can contact our Support Team at <a href="mailto:ttda.support@mx.ey.com">ttda.support@mx.ey.com</a>.</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<footer>
+    <div>
+        <p class="text-white foot-p">Copyright &copy; 1999-2021 | Ernst & Young | All rights reserved
+            | <a href="https://www.ey.com/es_mx/legal-and-privacy"
+                target="_blank">Privacy
+                Statement</a></p>
+    </div>
+</footer>
+{% endblock %}
+
+{% block code %}
+<style>
+    .stroke
+    {
+        color: white;
+        /* text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;   */
+    }
+    .content_container {
+        padding: 3%;
+        flex-grow: 50;
+    }
+
+    .card {
+        background-color: #2e2e38;
+        opacity: 0.888;
+        min-width: 320px !important;
+        margin-top: 5rem;
+    }
+
+    .card-group {
+        min-width: 525px !important;
+    }
+
+    .center {
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+
+    .register-card {
+        text-align: center;
+    }
+
+    .centered-form {
+        margin-top: 10%;
+    }
+
+    .center-register-btn {
+        text-align: center;
+    }
+
+    .reg-btn {
+        display: inherit;
+    }
+
+    .modal-content {
+        background: #2e2e38;
+    }
+
+    body {
+        background-image: url("{{ url_for('.static', filename='img/splashscreen.jpg') }}");
+        background-size: cover;
+        background-position: bottom;
+        object-fit: scale-down;
+    }
+
+    .app-body {
+        margin: 0 !important;
+    }
+
+    @media (max-width: 1210px) {
+        .adaptative-text {
+            font-size: 12px;
+        }
+    }
+
+    footer {
+        display: block !important;
+        margin-left: 2rem;
+        height: 2.5rem;
+    }
+
+
+    .app {
+        min-height: 96vh !important;
+    }
+
+    .btn-link {
+        font-weight: normal;
+        color: #fff;
+        border-radius: 0;
+    }
+
+    .btn-link:focus,
+    .btn-link:hover {
+        color: #fff;
+        text-decoration: underline;
+        background-color: transparent;
+    }
+
+    input[type="radio"] {
+        -webkit-appearance: checkbox;
+        /* Chrome, Safari, Opera */
+        -moz-appearance: checkbox;
+        /* Firefox */
+        -ms-appearance: checkbox;
+        /* not currently supported */
+    }
+
+    html {
+        height: 100%;
+    }
+
+    @media(max-width: 990px) {
+        html {
+            height: 105%;
+        }
+    }
+
+    @media(min-width: 740px) {
+        .ey-logo {
+            width: 57px!important;
+        }
+    }
+
+    .card {
+        margin-top: 3rem!important;
+    }
+
+    .modal-header{display:block}
+    body {
+        height: 96%;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "layouts/base.html" %}
+
+{% block body %}
+
+<div class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+  <header class="app-header navbar">
+    <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="">
+      {{ pageConfig.title }}
+    </a>
+    <!-- a class="nav-link nav-link--rounded pull-right" style="margin-right: 10px;" href=""></a -->
+  </header>
+  <div class="app-body">
+    {% block sidebar %}
+    <div class="sidebar">
+      <nav class="sidebar-nav">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="">
+              <i class="nav-icon icon-speedometer"></i> Dashboard
+              <span class="badge badge-primary">NEW</span>
+            </a>
+          </li>
+          <li class="nav-item nav-dropdown">
+            <a class="nav-link nav-dropdown-toggle" href="#">
+              <i class="nav-icon icon-bell"></i> My Account</a>
+            <ul class="nav-dropdown-items">
+              <li class="nav-item">
+                <a class="nav-link" href="">
+                  <i class="nav-icon icon-drop"></i> Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="">
+                  <i class="nav-icon icon-drop"></i> Password</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-title">Administration</li>
+          <li class="nav-item">
+            <a class="nav-link" href="">
+              <i class="nav-icon icon-drop"></i> Manage Users</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    {% endblock %}
+  {% block pre_content %}
+  {% endblock %}
+  <main class="main">
+
+  {# One-time system messages called Flash messages #}
+  {% block flash_messages %}
+    {% if flashMessages %}
+        {% for category, message in flashMessages %}
+            {% set stylecategory=category %}
+            {% if category=='error' %}
+                {% set stylecategory='danger' %}
+            {% endif %}
+            <div style="margin-bottom: -2px;" role="alert" class="alert alert-{{stylecategory}} alert-dismissible fade show"><big><big><strong>{{ category | safe | upper }}</strong> — {{ message|safe }}</big></big>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+  {% endblock %}
+  {% block breadcrumb %}
+    <!-- Breadcrumb-->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-menu"> 
+          <div class="btn-group" role="group" aria-label="Button group">
+            <a class="btn" href="{{ url_for('portal_view.mainView') }}">
+              <i class="fas fa-user-alt"></i> {{ pageConfig.description }} 
+            </a>
+          </div>
+        </li>
+        <li class="breadcrumb-menu d-md-down-none">
+          <div class="btn-group" role="group" aria-label="Button group">
+            <a class="btn" href="{{ url_for('portal_view.mainView') }}">
+              <i class="fas fa-code"></i> {{ pageConfig.detail }} 
+            </a>
+          </div>
+        </li>
+      </ol>
+    {% endblock %}
+  {% block content %}
+  <div><p>Default_CONTENT</p></div>
+  {% endblock %}
+  </main>
+  {% block post_content %}{% endblock %}
+
+
+{% endblock %}

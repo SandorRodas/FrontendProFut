@@ -1,0 +1,29 @@
+<form action="{{ url_for('portal_view.edit') }}" method="post">
+    <input type="hidden" name="Id" value="{{ register['_id'] }}"/>
+    <div class="form-row">
+        <div class="form-group col-3 col-sm-3 col-md-3">
+            <label for="code">C&oacute;digo</label>
+            <input id="code" type="text" class="form-control" placeholder="Código" name="Code" value="{{ register['code'] }}" required/>
+        </div>
+        <div class="form-group col-3 col-sm-3 col-md-3">
+            <label for="name">Nombre</label>
+            <input id="name" type="text" class="form-control" placeholder="Nombre" name="Name" value="{{ register['name'] }}" required/>
+        </div>
+        <div class="form-group col-3 col-sm-3 col-md-3">
+            <label for="price">Precio</label>
+            <input id="price" type="number" class="form-control" placeholder="Precio" name="Price" value="{{ register['price'] }}" required/>
+        </div>
+        <div class="form-group col-3 col-sm-3 col-md-3">
+            <label for="amount">Cantidad</label>
+            <input id="amount" type="number" class="form-control" placeholder="Cantidad" name="Amount" value="{{ register['amount'] }}" required/>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-9 col-sm-9 col-md-9"></div>
+        <div class="col-3 col-sm-3 col-md-3">
+            <button type="submit" class="btn btn-dark" style="float: right;">
+                Editar
+            </button>
+        </div>
+    </div>
+</form>

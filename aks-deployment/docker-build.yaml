@@ -1,0 +1,111 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- none
+
+resources:
+- repo: self
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Docker@2
+      displayName: ACR login
+      inputs:
+        containerRegistry: 'USSPIAC0FRSCN01-01'
+        command: 'login'
+    - task: Docker@2
+      inputs:
+        repository: 'genyus-back'
+        command: 'build'
+        Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'USSPIAC0FRSCN01-01'
+        repository: 'genyus-back'
+        tags: '$(Build.BuildId)'
+        command: 'push'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: 'aks-deployment/docker-deploy.yaml'
+        ArtifactName: 'ImageTag'
+        publishLocation: 'Container'
+############################################# Agent job
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.6'
+      inputs:
+        versionSpec: 3.6
+
+    - bash: |
+        python3.6 -m venv worker_venv
+        source worker_venv/bin/activate
+        pip3.6 install --upgrade pip
+        pip3.6 install setuptools
+        pip3.6 install -r requirements.txt
+      displayName: 'Install Application Dependencies'
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        includeRootFolder: false
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+############################################# Docker login aquasec
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Aquasec ACR'
+        command: 'login'
+      enabled: false
+############################################# Aquasec Task
+    - task: aquasecScanner@4
+      inputs:
+        image: 'ussdint0fracr01.azurecr.io/genyus-back:$(Build.BuildId)'
+        scanType: 'local'
+        register: false
+        hideBase: false
+        showNegligible: false
+        windowsScannerVersion: '4.2.0'
+        scanner: 'acemnldaquacr01.azurecr.io/aquasec/scanner:latest'
+        runOptions: '--privileged'
+        registry: 'ussdint0fracr01'
+        connection: 'Aqua-Console'
+        customFlags: '--direct-cc'
+        caCertificates: true
+        scanMalware: true
+        registerCompliant: true
+      enabled: false
+############################################# Checkmarx Task
+    - task: checkmarx.cxsast.cx-scan-task.Application security testing@2021
+      displayName: 'EY Genyus Back Checkmarx V1.2'
+      inputs:
+        projectName: 'EY Genyus Back Checkmarx V1.2'
+        syncMode: false
+        CheckmarxService: 'EY Genyus Checkmarx'
+        fullTeamName: 'CxServer\SP\EY\Service Lines\Tax'
+        folderExclusion: 'bin, site-packages'
+        fileExtension: '!**/*.DS_Store, !**/*.ipr, !**/*.iws, !**/*.bak, !**/*.tmp, !**/*.aac, !**/*.aif, !**/*.iff, !**/*.m3u, !**/*.mid, !**/*.mp3, !**/*.mpa, !**/*.ra, !**/*.wav, !**/*.wma, !**/*.3g2, !**/*.3gp, !**/*.asf, !**/*.asx, !**/*.avi,!**/*.flv, !**/*.mov, !**/*.mp4, !**/*.mpg,  !**/*.rm, !**/*.swf, !**/*.vob, !**/*.wmv, !**/*.bmp, !**/*.gif, !**/*.jpg, !**/*.png, !**/*.psd, !**/*.tif, !**/*.swf, !**/*.jar, !**/*.zip, !**/*.rar, !**/*.exe, !**/*.dll, !**/*.pdb, !**/*.7z, !**/*.gz, !**/*.tar.gz, !**/*.tar, !**/*.gz, !**/*.ahtm, !**/*.ahtml, !**/*.fhtml, !**/*.hdm, !**/*.hdml,   !**/*.hsql, !**/*.ht, !**/*.hta, !**/*.htc, !**/*.htd, !**/*.war, !**/*.ear, !**/*.htmls, !**/*.ihtml, !**/*.mht, !**/*.mhtm, !**/*.mhtml, !**/*.ssi, !**/*.stm, !**/*.stml, !**/*.ttml, !**/*.txn, !**/*.xhtm, !**/*.xhtml, !**/*.class, !**/*.iml'
+      enabled: false
+############################################# Whitesource Task
+    - task: whitesource.whitesource.task-hash-collector.WhiteSource@20
+      displayName: 'EY Genyus WhiteSource'
+      inputs:
+        extensions: '**/*.egg **/*.whl **/*.py'
+        productName: 'EY Genyus WhiteSource'
+        productVersion: 1.0.0
+        projectName: 'BackEnd_py - 1.0.1'
+        forceCheckAllDependencies: true
+        forceUpdate: true
+        WhiteSourceService: 'EY Genyus Whitesource'
+      enabled: false

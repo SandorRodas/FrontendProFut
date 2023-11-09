@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 'genyus-back'
+  namespace: genyus
+spec:
+  selector:
+    matchLabels:
+      app: 'genyus-back'
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: 'genyus-back'
+        aadpodidbinding: "genyus-back"
+    spec:
+      containers:
+      - name: genyus-back
+        image: usspiac003acr01.azurecr.io/genyus-back:#{Build.BuildId}#
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 443
+        env:
+        - name: TZ
+          value: America/Mexico_City
+        volumeMounts:
+        - name: shared-volume-def
+          mountPath: "/efs"
+        - name: secret-volume
+          mountPath: /usr/src/app/ssl
+      hostAliases:
+      - ip: 10.48.160.21
+        hostnames:
+        - db2.eyttda.com
+      volumes:
+        - name: shared-volume-def
+          persistentVolumeClaim:
+            claimName: genyus-file-pvc
+            readOnly: false
+        - name: secret-volume
+          secret:
+            secretName: genyus-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: genyus-back
+  namespace: genyus
+spec:
+  type: ClusterIP
+  ports:
+    - port: 443
+      targetPort: 44000
+      protocol: TCP
+      name: https
+  selector:
+    app: genyus-back

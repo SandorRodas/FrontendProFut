@@ -1,0 +1,162 @@
+
+{% extends "layouts/main.html" %}
+
+{% block sidebar %}
+{% include "sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="animated fadeIn">
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<div class="card card-body">
+					<form action="{{ url_for('portal_view.create') }}" method="post">
+						<div class="form-row">
+							<div class="form-group col-3 col-sm-3 col-md-3">
+								<label for="code">C&oacute;digo</label>
+								<input id="code" type="text" class="form-control" placeholder="Código" name="Code" required/>
+							</div>
+							<div class="form-group col-3 col-sm-3 col-md-3">
+								<label for="name">Nombre</label>
+								<input id="name" type="text" class="form-control" placeholder="Nombre" name="Name" required/>
+							</div>
+							<div class="form-group col-3 col-sm-3 col-md-3">
+								<label for="price">Precio</label>
+								<input id="price" type="number" class="form-control" placeholder="Precio" name="Price" required/>
+							</div>
+							<div class="form-group col-3 col-sm-3 col-md-3">
+								<label for="amount">Cantidad</label>
+								<input id="amount" type="number" class="form-control" placeholder="Cantidad" name="Amount" required/>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="col-9 col-sm-9 col-md-9"></div>
+							<div class="col-3 col-sm-3 col-md-3">
+								<button type="submit" class="btn btn-dark" style="float: right;">
+									Agregar
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				
+				<div class="card card-body">
+					<table id="miTabla" class="table table-striped table-bordered" style="width:100%">
+						<thead>
+							<tr>
+								<th>C&oacute;digo</th>
+								<th>Nombre</th>
+								<th>Precio</th>
+								<th>Cantidad</th>
+								<th class="text-center">Opciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for register in registers %}
+								<tr>
+									<td>{{ register['code'] }}</td>
+									<td>{{ register['name'] }}</td>
+									<td>Q{{ register['price'] }}</td>
+									<td>{{ register['amount'] }}</td>
+									<td class="text-center">
+										<a class="btn btn-xxs btn-dark text-white" onclick="showModalEdit('{{ register['_id'] }}')">
+											<i class="fas fa-edit"></i>
+											Editar
+										</a>
+										<a class="btn btn-xxs btn-danger text-white" href="{{ url_for('portal_view.delete', id=register['_id']) }}">
+											<i class="fas fa-trash-alt"></i>
+											Eliminar
+										</a>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade show" id="editRegister" data-backdrop="static" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                
+            </div>
+
+			<div class="modal-body" id="editRegisterModalBody">
+                <div class="container-fluid" style="inline-size: fit-content;"><i class="fas fa-circle-notch fa-spin" style="font-size: 40px;"></i></div>
+			</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block code %}
+<script>
+
+	function showModalEdit(id){
+		$urlModal = "{{ url_for('portal_view.getEdit') }}";
+		$('#editRegister').modal('show');
+		$.ajax({
+			url: `${$urlModal}?id=${id}`,
+			type: 'GET',
+			dataType: 'html',
+			success: function(res){
+				$('#editRegisterModalBody').html(res);
+			}
+		})
+	}
+
+    $(document).ready(function() {
+        $('#miTabla').DataTable({
+            dom: 'Bfrtip', 
+            buttons: [
+				{
+					extend: 'copy',
+					text: '<i class="fas fa-clone"></i><strong> Copiar </strong>',
+					className: 'btn-light text-dark',
+					title: 'file',
+					filename: 'Inventario'
+				},
+				{
+					extend: 'excel',
+					text: '<i class="fas fa-file-excel"></i><strong> Excel </strong>',
+					className: 'btn-light text-dark',
+					title: 'file',
+					filename: 'Inventario'
+				},
+				{
+					extend: 'print',
+					text: '<i class="fas fa-print"></i><strong> Imprimir </strong>',
+					className: 'btn-light text-dark',
+					title: 'file',
+					filename: 'Inventario'
+				},
+				{
+					extend: 'pdf',
+					text: '<i class="fas fa-file-pdf"></i><strong> Pdf </strong>',
+					className: 'btn-light text-dark',
+					title: 'file',
+					filename: 'Inventario'
+				}
+            ]
+        });
+    
+		$('#editRegister').on('hidden.bs.modal', function(e) {
+            $('#editRegisterModalBody').html('<div class="container-fluid" style="inline-size: fit-content;"><i class="fas fa-circle-notch fa-spin" style="font-size: 40px;"></i></div>');
+        });
+
+	});
+</script>
+{% endblock %}
